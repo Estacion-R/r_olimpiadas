@@ -1,8 +1,8 @@
 
 
 source("R/00-librerias.R")
-source("R/01-importar.R")
-df_banderas <- read_excel("base_bandera_limpio.xlsx")
+source(here::here("R/01-importar.R"))
+#df_banderas <- readxl::read_excel("base_bandera_limpio.xlsx")
 source("R/02-preparo_base_viz.R")
 
 # Cargo banderas
@@ -26,7 +26,9 @@ thematic_shiny(font = "auto")
 
 # Define UI for application that draws a histogram
 ui <- page_navbar(
-  
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "estilo.css")
+  ),
   theme = bslib::bs_theme(
     bg = "white",
     fg = "#191919",
@@ -39,131 +41,141 @@ ui <- page_navbar(
   
   useWaitress(color = "#7F7FFF"),
   
-  title = "Olimpiadas",
+  #title = "Olimpiadas",
+  title=div(tags$a(href='https://olympics.com/es/olympic-games',
+                   tags$img(src='https://olympics.com/images/static/b2p-images/logo_color.svg',
+                            height = 105, width = 300)), align = "center"),
   #bg = "white",
   underline = TRUE,
-  
-  nav_panel(
-    icon = icon("circle-info"),
-    title = "Sobre la App",
-    card(
-      class = "bg-dark",
-      #padding = "20px", gap = "20px",
-
-
-      br(),
-
-      titlePanel(title=div(tags$a(href='https://linktr.ee/estacion_r',
-                                  tags$img(src='https://pbs.twimg.com/profile_banners/1214735980172845056/1716430021/600x200',
-                                           height = 105, width = 300)), align = "center")),
-
-      br(),
-
-      tags$blockquote("En la presente aplicación se va a poder estudiar el comportamiento del mercado de trabajo bajo la estrategia de análisis de panel. Para esto, hablemos un poco de la E-P-H"
-      ),
-
-      #br(),
-
-      h1("La E-P-H"),
-      p(
-        strong(em("La Encuesta Permanente de Hogares")),
-        "es una de las fuentes de información sociodemográfica más importante del", a("Sistema Estadístico Nacional (SEN)", href = "https://www.indec.gob.ar/indec/web/Institucional-Indec-SistemaEstadistico"), "Argentino.
-              Si bien este operativo es más conocido por la Tasa de Desocupación",a("[1], ", href="#footnote-1"), "el abanico de indicadores que se pueden obtener para caracterizar las condiciones de vida de la población es muy amplio."
-      ),
-
-      p("Dos estrategias de análisis son plausible de abordar al momento de querer caracterizar a una población determinada.
-        La primera es el", strong("Análisis Transversal,"), "entendido como una forma de leer los datos en clave de 'foto'. Esta es el abordaje para el cual fue diseñada la encuesta, aunque no el único."
-      ),
-
-      p("Una segunda manera de interpretar la información es mediante el", strong("Anáisis Longitudinal"), "en el cual la lectura es en clave de 'película'. Esto es, para una misma población, observo su evolución respecto al indicador seleccionado.
-      Para ejemplificar, bajo este análisis puedo saber si la población ocupada que entrevisté en el primer trimestre del 2023 se encuentra en la misma situación o la ha modificado (pasó a la desocupación o inactividad) en el trimestre siguiente"
-      ),
-
-      br(),
-      h4("Análisis longitudinal de la EPH."),
-
-      p("Esta forma de interpretar los datos se debe gracias al", strong("esquema de rotación "), "bajo el cual fue diseñada la muestra, conocido como '2-2-2'.
-      Este esquema implica que una vivienda es seleccionada para ser entrevistada 4 veces. En una primera instancia participa del operativo durante los primeros", strong("dos "), "trimestres de forma consecutiva, descansa los", strong("dos "), "trimestres siguientes y vuelve a participar por", strong("dos "), "trimestres más, para finalmente salir de la muestra y no volver a ser seleccionada.
-
-        Al usar un esquema como el descripto, la muestra plausible de ser utilizada para el análisis de panel (longitudinal) es (teóricamente) del 50% para trimestres consecutivos (ejemplo, trimestre 1 y 2 del 2022) y para un mismo trimestre de años consecutivo (trimestre 1 del año 2022 y 2023)"
-      ),
-
-
-      p(id="footnote-1", "1 Porcentaje entre la población desocupada y la población económicamente activa.")
-    )
+  nav_panel("Sobre las Olimpíadas",
+            page_fillable(
+            layout_column_wrap(
+              width = "250px",
+              fill = FALSE,
+              value_box(
+                title = "Medallas en disputa",
+                value = textOutput("out_medallas_tot"),
+                #showcase = "🥇🥈🥉"), 
+                showcase = a(tags$img(src="https://upload.wikimedia.org/wikipedia/commons/1/15/Gold_medal.svg", width = 20),
+                             tags$img(src="https://upload.wikimedia.org/wikipedia/commons/0/03/Silver_medal.svg", width = 20),
+                             tags$img(src="https://upload.wikimedia.org/wikipedia/commons/5/52/Bronze_medal.svg", width = 20))),
+              value_box(
+                title = "Cantidad de países disputando",
+                value = textOutput(outputId = "out_paises_tot"),
+                #showcase = "🌎"),
+                showcase = a(tags$img(src = "https://camo.githubusercontent.com/638926866cd7654aa8600a398113bb4182c499c5d06cd79cc0614a6627794fe4/68747470733a2f2f63646e2e7261776769742e636f6d2f666c656b73636861732f73696d706c652d776f726c642d6d61702f61333664656365352f776f726c642d6d61702e737667", width = 100))),
+              value_box(
+                title = "Cantidad de disciplinas",
+                value = textOutput(outputId = "out_discuplina_tot"),
+                #showcase = "🚴🏾 🏋🏼 🤸🏿 🏃🏿‍♀️ 🏹")
+                showcase = a(tags$img(src='https://upload.wikimedia.org/wikipedia/commons/8/8f/Athletics_pictogram.svg', width = 30),
+                             tags$img(src='https://upload.wikimedia.org/wikipedia/commons/3/31/Modern_pentathlon_pictogram.svg', width = 30))
+              )
+            )
+            )
+            ),
+  nav_panel(height="1000px",
+            title = "Medallero", 
+            icon = icon("medal"),
+            page_fillable(
+              card(
+                min_height =  "1000px",
+                card_body(
+                  tabsetPanel(
+                    nav_panel(title = "Empty Tab",
+                              highchartOutput("sankey")),
+                    nav_panel(title = "Empty Tab")
+                  )
+                )
+              ),
+              div(tags$a(href='https://linktr.ee/estacion_r',
+                     tags$img(src='https://ugc.production.linktr.ee/9ed888ed-c016-468e-95da-2c449b2c2fc5_Logo-PNG-Baja-Mesa-de-trabajo-1-copia-3.png?io=true&size=avatar-v3_0',
+                              width = 300)), align = "center")
+            )
   ),
-  nav_panel(
-    icon = icon("video"),
-    title = "Película", 
-    fluidRow(
-      # column(filter_line_desde, width = 3),
-      # column(filter_line_hacia, width = 3),
-    ),
-    tags$head(
-      tags$style(HTML("
-      .highchart {
-        height: 600px;  /* Adjust this value as needed */
-      }
-    "))
-    ),
-    highchartOutput("sankey"),
-  ),
+  nav_panel(title = "TEST",
+            navset_card_tab(
+              height = 1500,
+              full_screen = TRUE,
+              title = "HTML Widgets",
+              nav_panel(
+                "Plotly",
+                #card_title("A plotly plot"),
+                highchartOutput("sankey", height = 1000)
+              ),
+              nav_panel(
+                "Leaflet",
+                card_title("A leaflet plot"),
+                "leaflet_widget"
+              ),
+              nav_panel(
+                shiny::icon("circle-info"),
+                markdown("Learn more about [htmlwidgets](http://www.htmlwidgets.org/)")
+              )
+            )
+            ),
   nav_spacer(),
   nav_menu(
     title = "+Info",
-    nav_item(a("Documento metodológico: La nueva EPH", href = "https://www.indec.gob.ar/ftp/cuadros/sociedad/metodologia_eph_continua.pdf")),
-    nav_item(a("Paquete {eph}", href = "https://docs.ropensci.org/eph/")),
-  ),
-  nav_spacer(),
+    align = "right",
+    nav_item(a("Fuente: Wikipedia", 
+             href = "https://es.wikipedia.org/wiki/Juegos_Olímpicos_de_París_2024")),
+    nav_item(tags$a(href='https://linktr.ee/estacion_r',
+                    tags$img(src='https://ugc.production.linktr.ee/9ed888ed-c016-468e-95da-2c449b2c2fc5_Logo-PNG-Baja-Mesa-de-trabajo-1-copia-3.png?io=true&size=avatar-v3_0',
+                             width = 50)))
+    #nav_item(a("Paquete {eph}", href = "https://docs.ropensci.org/eph/")),
+  )
 )
 
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-  # shinyalert(
-  #   title = "Buenas!",
-  #   text = "Esta aplicación está en desarrollo. Si algo no está funcionando, se puede mejorar o incluso tenés una idea para agregar, podés escribirme a pablotisco@gmail.com",
-  #   size = "s", 
-  #   closeOnEsc = TRUE,
-  #   closeOnClickOutside = FALSE,
-  #   html = FALSE,
-  #   type = "warning",
-  #   showConfirmButton = TRUE,
-  #   showCancelButton = FALSE,
-  #   confirmButtonText = "JOYA",
-  #   confirmButtonCol = "#405BFF",
-  #   timer = 0,
-  #   imageUrl = "",
-  #   animation = TRUE
-  # )
+  shinyalert(
+    title = "Buenas!",
+    text = "Esta aplicación está en desarrollo. Si algo no está funcionando, se puede mejorar o incluso tenés una idea para agregar, podés escribirme a pablotisco@gmail.com",
+    size = "s",
+    closeOnEsc = TRUE,
+    closeOnClickOutside = FALSE,
+    html = FALSE,
+    type = "warning",
+    showConfirmButton = TRUE,
+    showCancelButton = FALSE,
+    confirmButtonText = "JOYA",
+    confirmButtonCol = "#405BFF",
+    timer = 0,
+    imageUrl = "",
+    animation = TRUE
+  )
   
-  # observe({
-    # ### Armo la base de panel
-    # df_eph_panel <- reactive({
-    #   armo_base_panel(anio_0 = anio_ant, 
-    #                   trimestre_0 = trim_ant,
-    #                   anio_1 = anio_post, 
-    #                   trimestre_1 = trim_post)
-    #   
-    # })
-    
-    output$sankey <- renderHighchart({
-      highchart() |> 
-        hc_add_series(data = tb_medallero_pivot, 
-                      type = "sankey",
-                      hcaes(from = from, to = to, weight = weight),
-                      nodes = nodes_list) |> 
-        hc_plotOptions(series = list(dataLabels = list(
-          style = list(
-            fontSize = "12px",
-            color = "black"
-          ),
-          useHTML = TRUE,
-          padding = 2,
-          shadow = FALSE
-        ))) |> 
-        hc_tooltip(useHTML = TRUE, formatter = JS("
+  output$out_medallas_tot <- renderText({
+    "329"
+  })
+  
+  output$out_paises_tot <- renderText({
+    length(unique(tb_participantes$con))
+  })
+  
+  output$out_discuplina_tot <- renderText({
+    length(unique(tb_competencias$deporte))
+  })
+  
+  output$sankey <- renderHighchart({
+    highchart() |> 
+      hc_add_series(data = tb_medallero_pivot, 
+                    type = "sankey",
+                    hcaes(from = from, to = to, weight = weight),
+                    nodes = nodes_list) |> 
+      hc_plotOptions(series = list(dataLabels = list(
+        style = list(
+          fontSize = "12px",
+          color = "black"
+        ),
+        useHTML = TRUE,
+        padding = 2,
+        shadow = FALSE
+      ))) |> 
+      hc_tooltip(useHTML = TRUE, formatter = JS("
     function() {
       let point = this.point;
       let tooltipStyle = 'background-color: white; border-radius: 10px; border: 1px solid #0072CE; padding: 5px;';
@@ -192,13 +204,13 @@ server <- function(input, output) {
       }
     }
   ")) |> 
-        hc_title(text = "Medallero") |> 
-        hc_subtitle(text = "Juegos Olímpicos de París 2024") |> 
-        hc_caption(text = "Fuente: Wikipedia") |> 
-        hc_add_theme(hc_theme_smpl())
-      
-      
-    })
+      hc_title(text = "Medallero") |> 
+      hc_subtitle(text = "Juegos Olímpicos de París 2024") |> 
+      hc_caption(text = "Fuente: Wikipedia") |> 
+      hc_add_theme(hc_theme_smpl())
+    
+    
+  })
 }
 
 # Run the application 

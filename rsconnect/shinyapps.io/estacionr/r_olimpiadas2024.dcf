@@ -5,8 +5,9 @@ account: estacionr
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12404352
-bundleId: 8943055
+bundleId: 8945475
 url: https://estacionr.shinyapps.io/r_olimpiadas2024/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: app_with_zoom.R|archivo/app.R|base_bandera_crudo.xlsx|datos/base_bandera_crudo.xlsx|datos/base_bandera_limpio_old.xlsx|myapp|site

@@ -7,6 +7,6 @@ base_banderas <- data.frame(pais_orig, pais_iso, pais_nombre)
 base_banderas <- base_banderas |> 
   arrange(pais_nombre)
 
-writexl::write_xlsx(base_banderas, "base_bandera_crudo.xlsx")
+writexl::write_xlsx(base_banderas, "datos/base_bandera_crudo.xlsx")
 
 df_banderas <- readxl::read_excel("base_bandera_limpio.xlsx")
